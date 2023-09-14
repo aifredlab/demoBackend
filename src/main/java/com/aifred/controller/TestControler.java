@@ -13,17 +13,16 @@ import com.aifred.dto.Hello;
 public class TestControler {
 
 	@GetMapping("/helloWorld")
-	public ResponseEntity<Hello> helloWorld(Hello requestBody)
-	{
+	public ResponseEntity<Hello> helloWorld(Hello requestBody) {
 
-		requestBody.setResponse("Hello!     " + requestBody.getInput() );
+		requestBody.setResponse("Hello!     " + requestBody.getInput());
 
-		//return "Greetings from Spring Boot!";
+		// return "Greetings from Spring Boot!";
 		return new ResponseEntity<>(requestBody, HttpStatus.OK);
 
 		// return new ResponseEntity<>(hello, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/")
 	public String index() {
 		return "Greetings from Spring Boot!";

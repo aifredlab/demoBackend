@@ -14,12 +14,12 @@
 
 
 ========== MySQL 기동 ==============
-#Mac 
-brew services start mysql
-brew services restart mysql
-brew services stop mysql
+- Mac 
+#brew services start mysql
+# brew services restart mysql
+# brew services stop mysql
 
-# Windows
+- Windows
 서비스에서 MYsql80 시작하기
 
 

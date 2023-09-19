@@ -12,10 +12,17 @@ import com.aifred.dto.Hello;
 //@RequestMapping("/test")
 public class TestControler {
 
-	@GetMapping("/helloWorld")
+	@GetMapping("/askQuestion")
 	public ResponseEntity<Hello> helloWorld(Hello requestBody) {
 
-		requestBody.setResponse("Hello!     " + requestBody.getInput());
+		requestBody.setResponse("Hello! This is my answer: " + requestBody.getInput());
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// return "Greetings from Spring Boot!";
 		return new ResponseEntity<>(requestBody, HttpStatus.OK);
@@ -29,3 +36,4 @@ public class TestControler {
 	}
 
 }
+

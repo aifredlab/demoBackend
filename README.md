@@ -1,4 +1,4 @@
-========== 소스 import 후 해야할 내용 ==============
+# ========== 소스 import 후 해야할 내용 ==============
 1. Project>우측버튼>properties>Java Compiler>Annotation Processing 선택
   - Enable project specific settings 체크
   - Enable annotation processing 체크
@@ -13,15 +13,15 @@
 
 
 
-========== MySQL 기동 ==============
-- Mac 
-#brew services start mysql
-# brew services restart mysql
-# brew services stop mysql
+# ========== MySQL 기동 ==============
+## Mac 
+### brew services start mysql
+### brew services restart mysql
+### brew services stop mysql
 
-- Windows
-서비스에서 MYsql80 시작하기
+## Windows
+### 서비스에서 MYsql80 시작하기
 
 
-========== build.gradle =============
+# ========== build.gradle =============
 프로젝트 추가나 build.gradle 파일 변경시 우측버튼 클릭하여 refresh gradle project수행 

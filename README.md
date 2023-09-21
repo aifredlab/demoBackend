@@ -10,9 +10,6 @@
 6. 에서 .apt_generated 2개항목을 jre system library 위로 올리기
 5. rebuild
 
-
-
-
 # ========== MySQL 기동 ==============
 ## Mac 
 ### brew services start mysql
@@ -25,3 +22,10 @@
 
 # ========== build.gradle =============
 프로젝트 추가나 build.gradle 파일 변경시 우측버튼 클릭하여 refresh gradle project수행 
+
+# ========== Test Page =============
+http://localhost:8080/
+
+# ========== H2 DB관리자 페이지 접 =============
+http://localhost:8080/h2
+

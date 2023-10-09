@@ -16,18 +16,23 @@ public class DemoClient {
         blockingStub = AskerGrpc.newBlockingStub(channel);
     }
 
-    public void request(String ask) {
+    public AskReply request(String ask) {
         AskRequest request = AskRequest.newBuilder().setQuestion(ask).build();
-        AskReply response;
+        AskReply response = null;
         try {
             response = blockingStub.ask(request);
 
-            System.out.println("### resp = " + response.getAnswer() + ", " + response.getContent());
+            //System.out.println("### resp = " + response.getAnswer() + ", " + response.getContent());
+            logger.info("Answer : " + response.getAnswer());
+            return response;
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return;
+
         }
-        logger.info("Answer : " + response.getAnswer());
+
+        return response;
+
+
     }
 
     public static void main(String[] args) throws Exception {
@@ -35,7 +40,7 @@ public class DemoClient {
 
         try {
             DemoClient client = new DemoClient(channel);
-            client.request("what is your name?");
+            client.request("이 상품을 가입해서 만기가 되면 보험료 전액 환급이 가능해? 약관");
         } finally {
             channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
         }

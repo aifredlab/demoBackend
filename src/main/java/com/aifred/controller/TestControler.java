@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") //TODO:추후제거
 //@RequestMapping("/test")
 public class TestControler {
@@ -90,6 +91,7 @@ public class TestControler {
 
 
 	}
+
 
 
 	@GetMapping("/streamPush")

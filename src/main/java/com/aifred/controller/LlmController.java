@@ -12,21 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class LlmController {
-	
 	@Autowired
 	LlmService llmService;
 	
 	@PostMapping("/ask")
-	public ResponseEntity<QuestionReply> ask(@RequestParam QuestionRequest questionRequest) throws Exception {
+	public ResponseEntity<QuestionReply> ask(@RequestBody QuestionRequest questionRequest) throws Exception {
+		//TODO: Question 빈값 검증
 		QuestionReply questionReply =  llmService.ask(questionRequest.getQuestion());
 		return new ResponseEntity<QuestionReply>(questionReply, HttpStatus.OK);
 	}
-
-	@GetMapping("/ask")
-	public ResponseEntity<QuestionReply> ask2(@RequestParam QuestionRequest questionRequest) throws Exception {
-		QuestionReply questionReply =  llmService.ask(questionRequest.getQuestion());
-		return new ResponseEntity<QuestionReply>(questionReply, HttpStatus.OK);
-	}
-
 
 }

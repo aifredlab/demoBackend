@@ -1,6 +1,13 @@
 package com.aifred.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.collect.Iterators;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.demo.ask.CommunicatorGrpc;
+import io.grpc.demo.ask.Content;
+import io.grpc.demo.ask.Conversation;
+import io.grpc.demo.ask.Message;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,15 +21,14 @@ import com.aifred.dto.Hello;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000") //TODO:추후제거
 //@RequestMapping("/test")
 public class TestControler {
 
@@ -59,21 +65,24 @@ public class TestControler {
 
 
 
-	@GetMapping(value = "/stream-data", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-	public Flux<Integer> streamData() {
-		return Flux.create(sink -> {
-			// 여기에 스트림 데이터 생성 로직을 구현합니다.
-			for (int i = 0; i < 10; i++) {
-				// 데이터를 스트림에 emit 합니다.
-				sink.next(i);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			sink.complete(); // 스트림 종료
-		});
+	@GetMapping("/stream-data")
+	public Flux<Object> streamData() {
+		return Flux
+				.create(sink -> {
+					// 여기에 스트림 데이터 생성 로직을 구현합니다.
+					for (int i = 0; i < 10; i++) {
+						// 데이터를 스트림에 emit 합니다.
+						sink.next(i);
+
+						try {
+							Thread.sleep(1000); // 1초마다 데이터 생성
+						} catch (InterruptedException e) {
+							throw new RuntimeException(e);
+						}
+					}
+					sink.complete(); // 스트림 종료
+				})
+				.delayElements(Duration.ofSeconds(1)); // 1초 간격으로 데이터를 전송하도록 설정
 	}
 
 
@@ -96,12 +105,31 @@ public class TestControler {
 
 	@GetMapping("/streamPush")
 	public Flux<String> streamDataPush() {
-		String msg = "반갑습니다 무엇을 도와 드릴까요?";
-		String[] characters = msg.split("");
+		Content content = Content.newBuilder().setContent("test").build();
+		Message message = Message.newBuilder().setText("messageTest").build();
 
-		// 문자열 배열을 Flux로 변환하여 push 방식으로 스트림 생성
-		return Flux.fromArray(characters)
-				.delayElements(Duration.ofSeconds(1)); // 1초 간격으로 요소를 전송
+		Conversation conversation = Conversation
+				.newBuilder()
+				//.setContent(0, content)
+				.setMessage(message)
+				.build();
+
+		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051).usePlaintext().build();
+
+		CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
+		CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
+
+		Iterator<Conversation> iterator = blockingStub.askStreamReply(conversation);
+
+		while (iterator.hasNext()) {
+			System.out.println("start");
+			Conversation response = iterator.next();
+			System.out.println(response.getMessage());
+
+			return Flux.just(response.getMessage().getText());
+		}
+
+		return null;
 	}
 
 

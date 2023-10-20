@@ -50,7 +50,7 @@ public class DemoClient {
         CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
         CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
 
-        Iterator<Conversation> iter = blockingStub. askStreamReply(conversation);
+        Iterator<Conversation> iter = blockingStub.askStreamReply(conversation);
 
 
         while (iter.hasNext()) {

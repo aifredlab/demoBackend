@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aifred.dto.Hello;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.*;
@@ -31,6 +34,8 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/api")
 //@RequestMapping("/test")
 public class TestControler {
+
+	List<String> list = new ArrayList<String>();
 
 	@GetMapping("/askQuestion")
 	public ResponseEntity<Hello> helloWorld(Hello requestBody, HttpServletRequest request) {
@@ -101,9 +106,56 @@ public class TestControler {
 
 	}
 
+	@GetMapping("/stream2")
+	Flux<String> stream2() {
+
+		return Flux.generate(
+				// 초기 상태
+				() -> 0,
+
+				// 상태를 업데이트하고 데이터를 생성하는 BiFunction
+				(state, sink) -> {
+					sink.next("Data " + state);
+					if (state == 10) {
+						sink.complete(); // 스트림 완료
+					}
+
+					try {
+						Thread.sleep(1000);
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					return state + 1;
+				}
+		);
+	}
+
+	@GetMapping(value = "/stream3", produces = "text/event-stream")
+	public Flux<Integer> stream3() {
+		Flux<Integer> flux = Flux.generate(
+				() -> 1, // 초기 상태
+				(state, sink) -> {
+					if (state <= 5) {
+						sink.next(state); // 데이터 생성
+					} else {
+						sink.complete(); // 스트림 완료
+					}
+					try {
+						Thread.sleep(1000);
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					return state + 1; // 상태 업데이트
+				}
+		);
+		return flux;
+	}
 
 
-	@GetMapping("/streamPush")
+
+	@GetMapping(value = "/streamPush", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<String> streamDataPush() {
 		Content content = Content.newBuilder().setContent("test").build();
 		Message message = Message.newBuilder().setText("messageTest").build();
@@ -121,23 +173,18 @@ public class TestControler {
 
 		Iterator<Conversation> iterator = blockingStub.askStreamReply(conversation);
 
-		while (iterator.hasNext()) {
-			System.out.println("start");
-			Conversation response = iterator.next();
-			System.out.println(response.getMessage());
+			return Flux.create(sink -> {
+				Iterator<Conversation> conversationIterator = blockingStub.askStreamReply(conversation);
 
-			return Flux.just(response.getMessage().getText());
+				Schedulers.boundedElastic().schedule(() -> {
+					while (conversationIterator.hasNext()) {
+						Conversation conversation2 = conversationIterator.next();
+						sink.next(conversation2.getMessage().getText());
+					}
+					sink.complete();
+				});
+			});
 		}
-
-		return null;
-	}
-
-
-
-
-
-
-
 
 
 }

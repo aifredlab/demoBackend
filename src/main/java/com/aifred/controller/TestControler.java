@@ -180,10 +180,13 @@ public class TestControler {
 					while (conversationIterator.hasNext()) {
 						Conversation conversation2 = conversationIterator.next();
 						sink.next(conversation2.getMessage().getText());
+						System.out.println(conversation2.getMessage().getText());
 					}
 					sink.complete();
 				});
 			});
+
+				//	.map(tuple -> Collections.singletonMap("value", tuple));
 		}
 
 

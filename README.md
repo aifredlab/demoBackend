@@ -1,14 +1,10 @@
-# ========== 소스 import 후 해야할 내용 ==============
-1. Project>우측버튼>properties>Java Compiler>Annotation Processing 선택
-  - Enable project specific settings 체크
-  - Enable annotation processing 체크
-  - Enable processing in editor 체크
-2. Java Compiler>Annotation Processing>Factory Path 선택
-3. Add External jars 버튼 클릭
-4. C:\Users\remote_desktop\.gradle\caches\modules-2\files-2.1\org.mapstruct\mapstruct-processor\1.5.3.Final\xxxxxxxxxxx\mapstruct-processor-1.5.3.Final.jar 추가
-5. Build Path>Order and Export 탭 선택
-6. 에서 .apt_generated 2개항목을 jre system library 위로 올리기
-5. rebuild
+# ========== IntelliJ 설정 ==============
+- Plugin에서 롬복(Lombok) 설치
+- AutoReload 설정
+   1. [Preferences -> Build, Execution, Deployment -> Compiler] 에서 다음 항목을 활성화해야 한다.
+      > Build project automatically
+   2. [Preferences -> Advanced Settings] 에서 다음 항목을 활성화해야 한다.   
+      > Allow auto-make to start even if developed...........
 
 # ========== MySQL 기동 ==============
 ## Mac 

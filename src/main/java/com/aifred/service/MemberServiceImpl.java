@@ -6,11 +6,11 @@ import com.aifred.exception.AifredBusinessException;
 import com.aifred.exception.ExceptionCode;
 import com.aifred.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.aifred.entity.Member;
 
 import java.util.Optional;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -20,8 +20,8 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     MemberRepository memberRepository;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public MemberDto getMemberById(String id) throws AifredBusinessException {
@@ -49,7 +49,7 @@ public class MemberServiceImpl implements MemberService {
         member.setCompany(memberDto.getCompany());
         member.setName(memberDto.getName());
         member.setEmail(memberDto.getEmail());
-        //member.setPassword(passwordEncoder.encode(memberDto.getPassword())); //TODO:
+        member.setPassword(passwordEncoder.encode(memberDto.getPassword())); //TODO:
 
         memberRepository.save(member);
         return memberDto;

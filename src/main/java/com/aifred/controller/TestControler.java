@@ -171,22 +171,24 @@ public class TestControler {
 		CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
 		CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
 
-		Iterator<Conversation> iterator = blockingStub.askStreamReply(conversation);
-
-			return Flux.create(sink -> {
-				Iterator<Conversation> conversationIterator = blockingStub.askStreamReply(conversation);
-
-				Schedulers.boundedElastic().schedule(() -> {
-					while (conversationIterator.hasNext()) {
-						Conversation conversation2 = conversationIterator.next();
-						sink.next(conversation2.getMessage().getText());
-						System.out.println(conversation2.getMessage().getText());
-					}
-					sink.complete();
-				});
-			});
+//		Iterator<Conversation> iterator = blockingStub.askStreamReply(conversation);
+//
+//			return Flux.create(sink -> {
+//				Iterator<Conversation> conversationIterator = blockingStub.askStreamReply(conversation);
+//
+//				Schedulers.boundedElastic().schedule(() -> {
+//					while (conversationIterator.hasNext()) {
+//						Conversation conversation2 = conversationIterator.next();
+//						sink.next(conversation2.getMessage().getText());
+//						System.out.println(conversation2.getMessage().getText());
+//					}
+//					sink.complete();
+//				});
+//			});
 
 				//	.map(tuple -> Collections.singletonMap("value", tuple));
+
+		return  null;
 		}
 
 

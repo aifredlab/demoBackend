@@ -50,14 +50,13 @@ public class DemoClient {
         CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
         CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
 
-        Iterator<Message> iter = blockingStub.askStreamReply(conversation);
+        Iterator<Conversation> iter = blockingStub. askStreamReply(conversation);
 
-        System.out.println("=========== response 시작 =========");
+
         while (iter.hasNext()) {
-            Message response = iter.next();
-            System.out.println(response);
+            Conversation response = iter.next();
+            System.out.println("Received response: " + response);
         }
-        System.out.println("=========== response 종료 =========");
 
         channel.shutdown();
 

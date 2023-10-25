@@ -2,16 +2,16 @@ package com.aifred.service;
 
 
 import com.aifred.dto.MemberDto;
+import com.aifred.entity.Member;
 import com.aifred.exception.AifredBusinessException;
 import com.aifred.exception.ExceptionCode;
 import com.aifred.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.aifred.entity.Member;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
     PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberDto getMemberById(String id) throws AifredBusinessException {
+    public MemberDto getMemberById(Long id) throws AifredBusinessException {
 
         Optional<Member> optionalMember = memberRepository.findById(id);
         Member member = optionalMember.orElseThrow(() -> new AifredBusinessException(ExceptionCode.USER_NOT_FOUND));
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void removeMember(String id) {
+    public void removeMember(Long id) {
         memberRepository.deleteById(id);
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/member")
 public class MemberController {
 
     @Autowired
@@ -71,7 +71,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/unregister")
-    public ResponseEntity unregister(@RequestParam String id) {
+    public ResponseEntity unregister(@RequestParam Long id) {
         memberService.removeMember(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

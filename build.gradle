@@ -66,6 +66,9 @@ dependencies {
 	//runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:버전'
 	implementation 'com.h2database:h2'
 
+	// Apache Tika 종속성 추가
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.0'
+	implementation group: 'org.apache.tika', name: 'tika-parsers', version: '2.9.0'
 }
 
 tasks.named('test') {

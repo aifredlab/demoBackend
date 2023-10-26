@@ -26,16 +26,17 @@ public class MemberController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<List<Insurance>> login(@RequestBody MemberDto memberDto) throws AifredBusinessException {
+    public ResponseEntity login(@RequestBody MemberDto memberDto) throws AifredBusinessException {
         log.debug("memberDto={}", memberDto);
-        MemberDto returnedMemberDto = memberService.getMemberById(memberDto.getId());
-        if (returnedMemberDto == null) {
-            throw new AifredBusinessException(ExceptionCode.USER_NOT_FOUND);
-        } else {
-               }
+        //MemberDto returnedMemberDto = memberService.getMemberByEmail(memberDto.getId());
+//        if (returnedMemberDto == null) {
+//            throw new AifredBusinessException(ExceptionCode.USER_NOT_FOUND);
+//        } else {
+//               }
+//
+//        return null;
 
-        return null;
-
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/logout")

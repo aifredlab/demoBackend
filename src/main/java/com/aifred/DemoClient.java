@@ -2,7 +2,6 @@ package com.aifred;
 
 import io.grpc.*;
 import io.grpc.demo.ask.*;
-import io.grpc.stub.StreamObserver;
 
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +35,12 @@ public class DemoClient {
     }
 
     public void requestStream(String ask) {
-        Content content = Content.newBuilder().setContent("test").build();
-        Message message = Message.newBuilder().setText("messageTest").build();
+
+        String contents = "";
+        String question = "What's the whether today?";
+
+        Content content = Content.newBuilder().setContent(contents).build();
+        Message message = Message.newBuilder().setText(question).build();
 
         Conversation conversation = Conversation
                 .newBuilder()
@@ -50,12 +53,12 @@ public class DemoClient {
         CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
         CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
 
-        Iterator<Conversation> iter = blockingStub. askStreamReply(conversation);
+        Iterator<Message> iter = blockingStub. askStreamReply(conversation);
 
 
         while (iter.hasNext()) {
-            Conversation response = iter.next();
-            System.out.println("Received response: " + response);
+            Message returnMessage = iter.next();
+            System.out.println("Received response: " + returnMessage.getText());
         }
 
         channel.shutdown();
@@ -93,6 +96,9 @@ public class DemoClient {
             System.out.println("=============시작====================");
             DemoClient client = new DemoClient(channel);
             //client.request("이 상품을 가입해서 만기가 되면 보험료 전액 환급이 가능해? 약관");
+
+            client.requestStream("이 상품을 가입해서 만기가 되면 보험료 전액 환급이 가능해? 약관");
+
             client.requestStream("이 상품을 가입해서 만기가 되면 보험료 전액 환급이 가능해? 약관");
         }
         catch (Exception e) {

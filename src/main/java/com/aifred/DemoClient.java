@@ -44,7 +44,7 @@ public class DemoClient {
 
         Conversation conversation = Conversation
                 .newBuilder()
-                //.setContent(0, content)
+                .setContent(0, content)
                 .setMessage(message)
                 .build();
 

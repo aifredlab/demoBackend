@@ -46,7 +46,7 @@ public class MemberController {
 
 
 
-        return null;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/isRedundantEmail/{email}")

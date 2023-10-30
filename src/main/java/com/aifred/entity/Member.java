@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @SequenceGenerator(name = "member_auto_generator",
         sequenceName = "member_auto",
-        initialValue = 1000000000, allocationSize = 10
-)
-public class Member {
+        initialValue = 1000000000, allocationSize = 10)
+public class Member extends BaseEntity {
     @Id
     //@GeneratedValue(strategy= GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_auto_generator")

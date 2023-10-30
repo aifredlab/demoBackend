@@ -69,6 +69,14 @@ dependencies {
 	// Apache Tika 종속성 추가
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.0'
 	implementation group: 'org.apache.tika', name: 'tika-parsers', version: '2.9.0'
+
+	// QueryDSL
+	implementation "com.querydsl:querydsl-jpa"
+	annotationProcessor(
+			"javax.persistence:javax.persistence-api",
+			"javax.annotation:javax.annotation-api",
+			"com.querydsl:querydsl-apt:jpa")
+
 }
 
 tasks.named('test') {
@@ -85,7 +93,7 @@ protobuf {
 	}
 }
 
-sourceSets {whg
+sourceSets {
 	main {
 		java {
 			srcDirs 'build/generated/source/proto/main/grpc'

@@ -1,17 +1,18 @@
 package com.aifred.service;
 
 import com.aifred.dto.ChatHistoryDto;
+import com.aifred.dto.ConversationDto;
 
 import java.util.List;
 
 public interface ChatHistoryService {
-    ChatHistoryDto getChatHistory(String id);
+    ChatHistoryDto getChatHistory(Long id);
 
-    List<ChatHistoryDto> getChatHistoryListByMemberId(String userId);
+    List<ConversationDto> getChatHistoryList();
 
     void createChatHistory(ChatHistoryDto chatHistoryDto);
 
-    void removeChatHistory(String id);
+    void removeChatHistory(Long id);
 
-    void removeChatHistoryByMemberId(String userId);
+    void removeChatHistoryByMemberId(Long userId);
 }

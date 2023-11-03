@@ -1,6 +1,7 @@
 package com.aifred.controller;
 
 import com.aifred.dto.ChatHistoryDto;
+import com.aifred.dto.ConversationDto;
 import com.aifred.service.ChatHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ChatHistoryController {
      * @return
      */
     @GetMapping("/createChatHistory/{id}")
-    public ResponseEntity<ChatHistoryDto> getChatHistory(@PathVariable String id) {
+    public ResponseEntity<ChatHistoryDto> getChatHistory(@PathVariable Long id) {
         ChatHistoryDto chatHistoryDto = chatHistoryService.getChatHistory(id);
         return new ResponseEntity<ChatHistoryDto>(chatHistoryDto, HttpStatus.OK);
     }
@@ -33,13 +34,12 @@ public class ChatHistoryController {
     /**
      * userId로 채팅이력 리스트 조회
      *
-     * @param userId
      * @return
      */
-    @GetMapping("/getChatHistoryListByMemberId/{userId}")
-    public ResponseEntity<List<ChatHistoryDto>> getChatHistoryListByMemberId(@RequestParam String userId) {
-        List<ChatHistoryDto> chatHistoryDtoList = chatHistoryService.getChatHistoryListByMemberId(userId);
-        return new ResponseEntity<List<ChatHistoryDto>>(chatHistoryDtoList, HttpStatus.OK);
+    @GetMapping("/getChatHistoryList")
+    public ResponseEntity<List<ConversationDto>> getChatHistoryList() {
+        List<ConversationDto> chatHistoryDtoList = chatHistoryService.getChatHistoryList();
+        return new ResponseEntity<List<ConversationDto>>(chatHistoryDtoList, HttpStatus.OK);
     }
 
     /**
@@ -55,13 +55,13 @@ public class ChatHistoryController {
     }
 
     @DeleteMapping("/removeChatHistory/{id}")
-    public ResponseEntity removeChatHistory(@PathVariable String id) {
+    public ResponseEntity removeChatHistory(@PathVariable Long id) {
         chatHistoryService.removeChatHistory(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/removeChatHistoryByMemberId/{userId}")
-    public ResponseEntity removeChatHistoryByMemberId(@PathVariable String userId) {
+    public ResponseEntity removeChatHistoryByMemberId(@PathVariable Long userId) {
         chatHistoryService.removeChatHistoryByMemberId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

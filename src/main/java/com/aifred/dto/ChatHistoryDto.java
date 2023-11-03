@@ -1,15 +1,16 @@
 package com.aifred.dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class ChatHistoryDto {
-    private String id;
+    private Long conversationId;
+
+    private Long contentId;
+    private String content;
+
     private String question;
-    private String refContents;
-    private String createdAt;
-    private String memberId;
+    private String answer;
 }

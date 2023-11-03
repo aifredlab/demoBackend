@@ -16,9 +16,13 @@ public class Content extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    private Long messageId;
+
+    @Lob
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
-    private String createdBy;
+    private Long createdBy;
 
 }

@@ -16,12 +16,13 @@ public class Message extends BaseEntity{
     private Long id;
 
     @Column(nullable = false)
-    private String text;
-
-    @Column(nullable = false, length = 1)
-    private String type;
+    private Long conversationId;
 
     @Column(nullable = false)
-    private String createdBy;
+    private String text;
+
+    //1==질문, 2==답변
+    @Column(nullable = false, length = 1)
+    private String type;
 
 }

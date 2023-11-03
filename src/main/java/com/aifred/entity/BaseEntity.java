@@ -5,6 +5,7 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
+@Setter
 public class BaseEntity {
 
     @CreatedDate
@@ -23,7 +25,7 @@ public class BaseEntity {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private String createdBy;
+    private Long createdBy;
 
     @PrePersist
     public void prePersist() {

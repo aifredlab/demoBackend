@@ -8,8 +8,12 @@ import com.aifred.repository.ContentRepository;
 import com.aifred.repository.ConversationRepository;
 import com.aifred.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class ChatHistoryServiceImpl {
+import java.util.List;
+
+@Service
+public class ChatHistoryServiceImpl implements ChatHistoryService {
 
     @Autowired
     private ContentRepository contentRepository;
@@ -21,41 +25,61 @@ public class ChatHistoryServiceImpl {
     private ConversationRepository conversationRepository;
 
 
-    ChatHistoryDto getChatHistory(String id) {
+    @Override
+    public ChatHistoryDto getChatHistory(String id) {
         return null;
     }
 
-//    List<ChatHistoryDto> getChatHistoryListByMemberId(String userId) {
-//
-//
-//    }
+    @Override
+    public List<ChatHistoryDto> getChatHistoryListByMemberId(String userId) {
+        return null;
+    }
 
-    void createChatHistory(ChatHistoryDto chatHistoryDto) {
-        String memberId = "0000000000"; //TODO:하드코딩 수정
+    @Override
+    public void createChatHistory(ChatHistoryDto chatHistoryDto) {
+        Long memberId = 0L; //TODO:하드코딩 수정
+        Long conversationId = chatHistoryDto.getConversationId();
 
-        Content content = new Content();
-        content.setContent(chatHistoryDto.getRefContents());
-        content.setCreatedBy(memberId);
-        Content insertedContent = contentRepository.save(content);
+        //conversation 입력
+        if (conversationId == null) {
+            Conversation conversation = new Conversation();
+            conversation.setCreatedBy(memberId);
+            Conversation insertedConversation = conversationRepository.save(conversation);
+            conversationId = insertedConversation.getId();
+        }
 
-        Message message = new Message();
-        message.setText(chatHistoryDto.getQuestion());
-        message.setCreatedBy(memberId);
-        Message insertedMessage = messageRepository.save(message);
+        Message questionMessage = new Message();
+        questionMessage.setText(chatHistoryDto.getQuestion());
+        questionMessage.setCreatedBy(memberId);
+        questionMessage.setType("1"); //type==질문
+        questionMessage.setConversationId(conversationId);
+        Message insertedQuestionMessage = messageRepository.save(questionMessage);
 
-        Conversation conversation = new Conversation();
-        conversation.setContentId(content.getId());
-        conversation.setMessageId(insertedMessage.getId());
-        conversationRepository.save(conversation);
+        Message answerMessage = new Message();
+        answerMessage.setText(chatHistoryDto.getAnswer());
+        answerMessage.setCreatedBy(memberId);
+        answerMessage.setType("2"); //type==질문
+        answerMessage.setConversationId(conversationId);
+        Message insertedAnswerMessage = messageRepository.save(answerMessage);
 
+        if ( !"".equals(chatHistoryDto.getContent())) {
+            Content content = new Content();
+            content.setContent(chatHistoryDto.getContent());
+            content.setCreatedBy(memberId);
+            content.setMessageId(insertedAnswerMessage.getId());
+            Content insertedContent = contentRepository.save(content);
+        }
+    }
+
+    @Override
+    public void removeChatHistory(String id) {
 
     }
 
-    void removeChatHistory(String id) {
+    @Override
+    public void removeChatHistoryByMemberId(String userId) {
 
     }
 
-    void removeChatHistoryByMemberId(String userId) {
 
-    }
 }

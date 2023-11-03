@@ -17,13 +17,7 @@ public class Conversation extends BaseEntity{
     private Long id;
 
     @Column(nullable = false)
-    private Long contentId;
-
-    @Column(nullable = false)
-    private Long messageId;
-
-    @Column(nullable = false)
-    private String createdBy;
+    private Long createdBy;
 
 }
 

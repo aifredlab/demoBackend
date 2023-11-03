@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Insurance extends BaseEntity{
+public class Insurance{
 	
 	@Id
 	private String id;

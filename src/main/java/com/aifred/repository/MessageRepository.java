@@ -3,7 +3,12 @@ package com.aifred.repository;
 import com.aifred.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MessageRepository extends JpaRepository<Message, String> {
+import java.util.List;
+
+public interface MessageRepository extends JpaRepository<Message, Long> {
+
+
+    List<Message> findByConversationId(Long conversationId);
 
 //
 //    /**

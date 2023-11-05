@@ -2,6 +2,7 @@ package com.aifred.service;
 
 import com.aifred.dto.ChatHistoryDto;
 import com.aifred.dto.ConversationDto;
+import com.aifred.dto.MessageDto;
 import com.aifred.entity.Content;
 import com.aifred.entity.Conversation;
 import com.aifred.entity.Message;
@@ -13,20 +14,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChatHistoryServiceImpl implements ChatHistoryService {
-
     @Autowired
     private ContentRepository contentRepository;
-
     @Autowired
     private MessageRepository messageRepository;
-
     @Autowired
     private ConversationRepository conversationRepository;
-
-
     @Override
     public ChatHistoryDto getChatHistory(Long id) {
         return null;
@@ -46,6 +43,30 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             chatHistoryList.add(conversationDto);
         }
         return chatHistoryList;
+    }
+
+    @Override
+    public List<Message> getChatHistoryDetail(Long conversationId) {
+
+        Long memberId = 1000000000L; //TODO:하드코딩 수정
+        //계정검증
+
+        List<MessageDto> messageDtoList = new ArrayList<MessageDto>();
+
+        //TODO:추후 querydsl로 join으로
+        List<Message> messageList = messageRepository.findByConversationId(conversationId);
+        for (Message message: messageList) {
+            MessageDto messageDto = new MessageDto();
+            messageDto.setType(message.getType());
+            messageDto.setId(message.getId());
+            messageDto.setText(message.getText());
+
+            Optional<Content> content = contentRepository.findByMessageId(message.getId());
+            if (content.isPresent()) {
+                messageDto.setContent(message.getText());
+            }
+        }
+        return messageList;
     }
 
     @Override
@@ -94,6 +115,8 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     public void removeChatHistoryByMemberId(Long userId) {
 
     }
+
+
 
 
 }

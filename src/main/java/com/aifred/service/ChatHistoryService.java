@@ -2,6 +2,7 @@ package com.aifred.service;
 
 import com.aifred.dto.ChatHistoryDto;
 import com.aifred.dto.ConversationDto;
+import com.aifred.entity.Message;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ChatHistoryService {
     void removeChatHistory(Long id);
 
     void removeChatHistoryByMemberId(Long userId);
+
+    List<Message> getChatHistoryDetail(Long id);
 }

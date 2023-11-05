@@ -3,7 +3,11 @@ package com.aifred.repository;
 import com.aifred.entity.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ContentRepository extends JpaRepository<Content, String> {
+import java.util.Optional;
+
+public interface ContentRepository extends JpaRepository<Content, Long> {
+
+    Optional<Content> findByMessageId(Long messageId);
 
 //
 //    /**

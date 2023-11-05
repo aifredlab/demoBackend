@@ -2,6 +2,7 @@ package com.aifred.controller;
 
 import com.aifred.dto.ChatHistoryDto;
 import com.aifred.dto.ConversationDto;
+import com.aifred.entity.Message;
 import com.aifred.service.ChatHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +21,7 @@ public class ChatHistoryController {
     private ChatHistoryService chatHistoryService;
 
     /**
-     * 채팅이력 조회
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping("/createChatHistory/{id}")
-    public ResponseEntity<ChatHistoryDto> getChatHistory(@PathVariable Long id) {
-        ChatHistoryDto chatHistoryDto = chatHistoryService.getChatHistory(id);
-        return new ResponseEntity<ChatHistoryDto>(chatHistoryDto, HttpStatus.OK);
-    }
-
-    /**
-     * userId로 채팅이력 리스트 조회
+     * 채팅이력 리스트 조회
      *
      * @return
      */
@@ -40,6 +29,17 @@ public class ChatHistoryController {
     public ResponseEntity<List<ConversationDto>> getChatHistoryList() {
         List<ConversationDto> chatHistoryDtoList = chatHistoryService.getChatHistoryList();
         return new ResponseEntity<List<ConversationDto>>(chatHistoryDtoList, HttpStatus.OK);
+    }
+
+    /**
+     * 채팅이력 상세 조회
+     *
+     * @return
+     */
+    @GetMapping("/getChatHistoryDetail/{conversationId}")
+    public ResponseEntity<List<Message>> getChatHistoryDetail(@PathVariable Long conversationId) {
+        List<Message> chatHistoryDtoList = chatHistoryService.getChatHistoryDetail(conversationId);
+        return new ResponseEntity<List<Message>>(chatHistoryDtoList, HttpStatus.OK);
     }
 
     /**

@@ -27,7 +27,8 @@ public class ChatHistoryController {
      */
     @GetMapping("/getChatHistoryList")
     public ResponseEntity<List<ConversationDto>> getChatHistoryList() {
-        List<ConversationDto> chatHistoryDtoList = chatHistoryService.getChatHistoryList();
+        Long memberId = 1000000000L; //TODO:하드코딩 수정
+        List<ConversationDto> chatHistoryDtoList = chatHistoryService.getChatHistoryListByMemberId(memberId);
         return new ResponseEntity<List<ConversationDto>>(chatHistoryDtoList, HttpStatus.OK);
     }
 
@@ -50,19 +51,20 @@ public class ChatHistoryController {
      */
     @PostMapping("/createChatHistory")
     public ResponseEntity createChatHistory(@RequestBody ChatHistoryDto chatHistoryDto) {
-        chatHistoryService.createChatHistory(chatHistoryDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Long conversationId = chatHistoryService.createChatHistory(chatHistoryDto);
+        return new ResponseEntity<Long>(conversationId, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/removeChatHistory/{id}")
-    public ResponseEntity removeChatHistory(@PathVariable Long id) {
-        chatHistoryService.removeChatHistory(id);
+    @DeleteMapping("/removeChatHistory/{conversationId}")
+    public ResponseEntity removeChatHistory(@PathVariable Long conversationId) {
+        chatHistoryService.removeChatHistory(conversationId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/removeChatHistoryByMemberId/{userId}")
-    public ResponseEntity removeChatHistoryByMemberId(@PathVariable Long userId) {
-        chatHistoryService.removeChatHistoryByMemberId(userId);
+    @DeleteMapping("/removeChatHistoryList")
+    public ResponseEntity removeChatHistoryByMemberId() {
+        Long memberId = 1000000000L; //TODO:하드코딩 수정
+        chatHistoryService.removeChatHistoryByMemberId(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -11,11 +11,13 @@ import com.aifred.repository.ConversationRepository;
 import com.aifred.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class ChatHistoryServiceImpl implements ChatHistoryService {
     @Autowired
@@ -30,8 +32,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     }
 
     @Override
-    public List<ConversationDto> getChatHistoryList() {
-        Long memberId = 1000000000L; //TODO:하드코딩 수정
+    public List<ConversationDto> getChatHistoryListByMemberId(Long memberId) {
         List<Conversation> list = conversationRepository.findByCreatedBy(memberId);
 
         List<ConversationDto> chatHistoryList = new ArrayList<ConversationDto>();
@@ -70,7 +71,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     }
 
     @Override
-    public void createChatHistory(ChatHistoryDto chatHistoryDto) {
+    public Long createChatHistory(ChatHistoryDto chatHistoryDto) {
         Long memberId = 1000000000L; //TODO:하드코딩 수정
         Long conversationId = chatHistoryDto.getConversationId();
 
@@ -104,19 +105,25 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             content.setMessageId(insertedAnswerMessage.getId());
             Content insertedContent = contentRepository.save(content);
         }
+        return conversationId;
     }
 
     @Override
-    public void removeChatHistory(Long id) {
-
+    public void removeChatHistory(Long conversationId) {
+        List<Message> messageList = messageRepository.findByConversationId(conversationId);
+        for (Message message: messageList) {
+            contentRepository.deleteByMessageId(message.getId());
+            messageRepository.deleteById(message.getId());
+        }
+        conversationRepository.deleteById(conversationId);
     }
 
     @Override
-    public void removeChatHistoryByMemberId(Long userId) {
-
+    public void removeChatHistoryByMemberId(Long memberId) {
+        contentRepository.deleteByCreatedBy(memberId);
+        messageRepository.deleteByCreatedBy(memberId);
+        conversationRepository.deleteByCreatedBy(memberId);
     }
-
-
 
 
 }

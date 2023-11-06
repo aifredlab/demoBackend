@@ -39,10 +39,10 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 //    //void deleteById(String id);
 //
 //
-//    /**
-//     * memberId로 채팅이력 삭제
-//     * @param memberId
-//     */
-//    void deleteByMemberId(String memberId);
+    /**
+     * memberId로 채팅이력 삭제
+     * @param memberId
+     */
+    void deleteByCreatedBy(Long memberId);
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public interface ChatHistoryService {
     ChatHistoryDto getChatHistory(Long id);
 
-    List<ConversationDto> getChatHistoryList();
+    List<ConversationDto> getChatHistoryListByMemberId(Long memberId);
 
     Long createChatHistory(ChatHistoryDto chatHistoryDto);
 

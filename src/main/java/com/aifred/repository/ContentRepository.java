@@ -9,6 +9,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     Optional<Content> findByMessageId(Long messageId);
 
+
 //
 //    /**
 //     * id로 채팅이력 조회
@@ -38,10 +39,11 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 //    //void deleteById(String id);
 //
 //
-//    /**
-//     * memberId로 채팅이력 삭제
-//     * @param memberId
-//     */
-//    void deleteByMemberId(String memberId);
+    /**
+     * memberId로 채팅이력 삭제
+     * @param memberId
+     */
+    void deleteByCreatedBy(Long memberId);
 
+    void deleteByMessageId(Long messageId);
 }

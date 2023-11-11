@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ConversationRepository extends JpaRepository<Conversation, String> {
+public interface ConversationRepository extends JpaRepository<Conversation, Long> {
 
 //
 //    /**
@@ -21,6 +21,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Stri
      * @return
      */
     List<Conversation> findByCreatedBy(Long memberId);
+
+//    void deleteByMemberId(Long memberId);
 //
 //    /**Ï
 //     * 채팅 이력 저장
@@ -36,10 +38,10 @@ public interface ConversationRepository extends JpaRepository<Conversation, Stri
 //    //void deleteById(String id);
 //
 //
-//    /**
-//     * memberId로 채팅이력 삭제
-//     * @param memberId
-//     */
-//    void deleteByMemberId(String memberId);
+    /**
+     * memberId로 채팅이력 삭제
+     * @param memberId
+     */
+    void deleteByCreatedBy(Long memberId);
 
 }

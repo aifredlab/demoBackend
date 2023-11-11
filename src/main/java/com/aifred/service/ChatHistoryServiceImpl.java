@@ -70,7 +70,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     }
 
     @Override
-    public void createChatHistory(ChatHistoryDto chatHistoryDto) {
+    public Long createChatHistory(ChatHistoryDto chatHistoryDto) {
         Long memberId = 1000000000L; //TODO:하드코딩 수정
         Long conversationId = chatHistoryDto.getConversationId();
 
@@ -104,6 +104,8 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             content.setMessageId(insertedAnswerMessage.getId());
             Content insertedContent = contentRepository.save(content);
         }
+        
+        return conversationId;
     }
 
     @Override

@@ -46,12 +46,12 @@ public class ChatHistoryController {
      * 채팅이력 생성
      *
      * @param chatHistoryDto
-     * @return
+     * @return conversationId
      */
     @PostMapping("/createChatHistory")
     public ResponseEntity createChatHistory(@RequestBody ChatHistoryDto chatHistoryDto) {
-        chatHistoryService.createChatHistory(chatHistoryDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Long conversationId = chatHistoryService.createChatHistory(chatHistoryDto);
+        return new ResponseEntity<Long>(conversationId, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/removeChatHistory/{id}")

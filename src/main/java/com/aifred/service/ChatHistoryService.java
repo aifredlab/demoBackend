@@ -11,7 +11,7 @@ public interface ChatHistoryService {
 
     List<ConversationDto> getChatHistoryList();
 
-    void createChatHistory(ChatHistoryDto chatHistoryDto);
+    Long createChatHistory(ChatHistoryDto chatHistoryDto);
 
     void removeChatHistory(Long id);
 

@@ -1,5 +1,6 @@
 package com.aifred.controller;
 
+import com.aifred.dto.MessageDto;
 import com.aifred.dto.QuestionRequestDto;
 import com.aifred.service.ChatHistoryService;
 import com.aifred.service.LlmService;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -38,7 +40,11 @@ public class LlmController {
 
 	@PostMapping(value = "/askContents")
 	public ResponseEntity<QuestionRequestDto> askContents(@RequestBody QuestionRequestDto questionRequestDto) {
-		Message message = Message.newBuilder().setText(questionRequestDto.getQuestion()).build();
+
+		Message.Builder messageBuilder = Message.newBuilder();
+		messageBuilder.setText(questionRequestDto.getQuestion());
+		messageBuilder.setType("1");
+		Message message = messageBuilder.build();
 
 		//TODO:포트정보 프로퍼티에
 		//======================================================
@@ -67,8 +73,24 @@ public class LlmController {
 
 	@PostMapping(value = "/ask", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Flux<String> streamDataPush(@RequestBody QuestionRequestDto questionRequestDto) {
+		Message.Builder messageBuilder = Message.newBuilder();
+		messageBuilder.setText(questionRequestDto.getQuestion());
+		messageBuilder.setType("3");
+		Message message = messageBuilder.build();
+
 		Content content = Content.newBuilder().setContent(questionRequestDto.getContent()).build();
-		Message message = Message.newBuilder().setText(questionRequestDto.getQuestion()).build();
+
+		Long memberId = 1000000000L; //TODO:하드코딩 수정
+		List<MessageDto> messageDtoList = chatHistoryService.getChatHistoryDetail(questionRequestDto.getConversationId());
+		for (MessageDto messageDto :messageDtoList) {
+			Message.Builder messageHistoryBuilder = Message.newBuilder();
+			messageBuilder.setText(questionRequestDto.getQuestion());
+			messageBuilder.setType("3");
+			Message messageHistory = messageBuilder.build();
+
+
+		}
+
 
 		Conversation conversation = Conversation
 				.newBuilder()

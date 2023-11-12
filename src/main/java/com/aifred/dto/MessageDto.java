@@ -15,7 +15,10 @@ public class MessageDto {
     //1==질문, 2==답변
     private String type;
 
+    private Long contentId;
+
     private String content;
+
 }
 
 

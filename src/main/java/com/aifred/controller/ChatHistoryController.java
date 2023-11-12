@@ -2,7 +2,7 @@ package com.aifred.controller;
 
 import com.aifred.dto.ChatHistoryDto;
 import com.aifred.dto.ConversationDto;
-import com.aifred.entity.Message;
+import com.aifred.dto.MessageDto;
 import com.aifred.service.ChatHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,9 @@ public class ChatHistoryController {
      * @return
      */
     @GetMapping("/getChatHistoryDetail/{conversationId}")
-    public ResponseEntity<List<Message>> getChatHistoryDetail(@PathVariable Long conversationId) {
-        List<Message> chatHistoryDtoList = chatHistoryService.getChatHistoryDetail(conversationId);
-        return new ResponseEntity<List<Message>>(chatHistoryDtoList, HttpStatus.OK);
+    public ResponseEntity<List<MessageDto>> getChatHistoryDetail(@PathVariable Long conversationId) {
+        List<MessageDto> chatHistoryDtoList = chatHistoryService.getChatHistoryDetail(conversationId);
+        return new ResponseEntity<List<MessageDto>>(chatHistoryDtoList, HttpStatus.OK);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ChatHistoryController {
     }
 
     @DeleteMapping("/removeChatHistoryList")
-    public ResponseEntity removeChatHistoryByMemberId() {
+    public ResponseEntity removeChatHistoryList() {
         Long memberId = 1000000000L; //TODO:하드코딩 수정
         chatHistoryService.removeChatHistoryByMemberId(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

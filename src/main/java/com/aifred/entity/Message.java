@@ -25,4 +25,9 @@ public class Message extends BaseEntity{
     @Column(nullable = false, length = 1)
     private String type;
 
+    @Column
+    private Long contentId;
+
+
+
 }

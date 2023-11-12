@@ -2,20 +2,31 @@ package com.aifred.service;
 
 import com.aifred.dto.ChatHistoryDto;
 import com.aifred.dto.ConversationDto;
-import com.aifred.entity.Message;
+import com.aifred.dto.MessageDto;
+import com.aifred.dto.QuestionRequestDto;
 
 import java.util.List;
 
 public interface ChatHistoryService {
-    ChatHistoryDto getChatHistory(Long id);
+    public ChatHistoryDto getChatHistory(Long id);
 
-    List<ConversationDto> getChatHistoryListByMemberId(Long memberId);
+    public List<ConversationDto> getChatHistoryListByMemberId(Long memberId);
 
-    Long createChatHistory(ChatHistoryDto chatHistoryDto);
+    public Long createChatHistory(ChatHistoryDto chatHistoryDto);
 
-    void removeChatHistory(Long id);
+    public void removeChatHistory(Long id);
 
-    void removeChatHistoryByMemberId(Long userId);
+    public void removeChatHistoryByMemberId(Long userId);
 
-    List<Message> getChatHistoryDetail(Long id);
+    public List<MessageDto> getChatHistoryDetail(Long id);
+
+    public QuestionRequestDto createConversation(QuestionRequestDto questionRequestDto);
+
+    public Long createRequestMessage(QuestionRequestDto questionRequestDto);
+
+    public Long createResponseMessage(QuestionRequestDto questionRequestDto);
+
+    public Long createContent(String contentText);
+
+
 }

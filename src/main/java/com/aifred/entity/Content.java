@@ -15,9 +15,6 @@ public class Content extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_auto_generator")
     private Long id;
 
-    @Column(nullable = false)
-    private Long messageId;
-
     @Lob
     @Column(nullable = false)
     private String content;

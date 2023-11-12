@@ -1,8 +1,6 @@
 package com.aifred.service;
 
-import com.aifred.dto.ChatHistoryDto;
-import com.aifred.dto.ConversationDto;
-import com.aifred.dto.MessageDto;
+import com.aifred.dto.*;
 import com.aifred.entity.Content;
 import com.aifred.entity.Conversation;
 import com.aifred.entity.Message;
@@ -12,6 +10,7 @@ import com.aifred.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,8 @@ import java.util.Optional;
 @Transactional
 @Service
 public class ChatHistoryServiceImpl implements ChatHistoryService {
+    Long memberId = 1000000000L; //TODO:하드코딩 수정
+
     @Autowired
     private ContentRepository contentRepository;
     @Autowired
@@ -47,7 +48,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     }
 
     @Override
-    public List<Message> getChatHistoryDetail(Long conversationId) {
+    public List<MessageDto> getChatHistoryDetail(Long conversationId) {
 
         Long memberId = 1000000000L; //TODO:하드코딩 수정
         //계정검증
@@ -62,17 +63,24 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             messageDto.setId(message.getId());
             messageDto.setText(message.getText());
 
-            Optional<Content> content = contentRepository.findByMessageId(message.getId());
-            if (content.isPresent()) {
-                messageDto.setContent(message.getText());
+            if (message.getContentId() != null) {
+                Optional<Content> content = contentRepository.findById(message.getContentId());
+                if (content.isPresent()) {
+                    messageDto.setContentId(content.get().getId());
+                    messageDto.setContent(content.get().getContent());
+                }
             }
+
+            messageDtoList.add(messageDto);
         }
-        return messageList;
+        return messageDtoList;
     }
+
+
 
     @Override
     public Long createChatHistory(ChatHistoryDto chatHistoryDto) {
-        Long memberId = 1000000000L; //TODO:하드코딩 수정
+
         Long conversationId = chatHistoryDto.getConversationId();
 
         //conversation 입력
@@ -102,7 +110,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             Content content = new Content();
             content.setContent(chatHistoryDto.getContent());
             content.setCreatedBy(memberId);
-            content.setMessageId(insertedAnswerMessage.getId());
+            //content.setMessageId(insertedAnswerMessage.getId());
             Content insertedContent = contentRepository.save(content);
         }
         return conversationId;
@@ -112,7 +120,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     public void removeChatHistory(Long conversationId) {
         List<Message> messageList = messageRepository.findByConversationId(conversationId);
         for (Message message: messageList) {
-            contentRepository.deleteByMessageId(message.getId());
+            contentRepository.deleteById(message.getContentId());
             messageRepository.deleteById(message.getId());
         }
         conversationRepository.deleteById(conversationId);
@@ -123,6 +131,57 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
         contentRepository.deleteByCreatedBy(memberId);
         messageRepository.deleteByCreatedBy(memberId);
         conversationRepository.deleteByCreatedBy(memberId);
+    }
+
+
+    @Override
+    public QuestionRequestDto createConversation(QuestionRequestDto questionRequestDto) {
+        Long conversationId = questionRequestDto.getConversationId();
+        if (conversationId == null) {
+            Conversation conversation = new Conversation();
+            conversation.setTitle(questionRequestDto.getQuestion());
+            conversation.setCreatedBy(memberId);
+            Conversation insertedConversation = conversationRepository.save(conversation);
+
+            questionRequestDto.setConversationId(insertedConversation.getId());
+            questionRequestDto.setCreatedAt(insertedConversation.getCreatedAt());
+        }
+        return questionRequestDto;
+    }
+
+    public Long createContent(String contentText) {
+        if (StringUtils.hasLength(contentText)) {
+            Content content = new Content();
+            content.setContent(contentText);
+            content.setCreatedBy(memberId);
+            Content insertedContent = contentRepository.save(content);
+            return insertedContent.getId();
+        }
+
+        return null;
+    }
+
+    public Long createRequestMessage(QuestionRequestDto questionRequestDto) {
+        Message questionMessage = new Message();
+        questionMessage.setText(questionRequestDto.getQuestion());
+        questionMessage.setCreatedBy(memberId);
+        questionMessage.setType("1"); //type==질문
+        questionMessage.setConversationId(questionRequestDto.getConversationId());
+        questionMessage.setContentId(questionRequestDto.getContentId());
+        questionMessage.setText(questionRequestDto.getQuestion());
+        Message insertedQuestionMessage = messageRepository.save(questionMessage);
+        return insertedQuestionMessage.getId();
+    }
+
+    public Long createResponseMessage(QuestionRequestDto questionRequestDto) {
+        Message questionMessage = new Message();
+        questionMessage.setText(questionRequestDto.getResponse());
+        questionMessage.setCreatedBy(memberId);
+        questionMessage.setType("2"); //type==시스템의 답변
+        questionMessage.setConversationId(questionRequestDto.getConversationId());
+        questionMessage.setContentId(questionRequestDto.getContentId());
+        Message insertedQuestionMessage = messageRepository.save(questionMessage);
+        return insertedQuestionMessage.getId();
     }
 
 

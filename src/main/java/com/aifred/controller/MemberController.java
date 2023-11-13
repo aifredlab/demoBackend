@@ -3,13 +3,13 @@ package com.aifred.controller;
 import com.aifred.dto.MemberDto;
 import com.aifred.entity.Insurance;
 import com.aifred.exception.AifredBusinessException;
-import com.aifred.exception.ExceptionCode;
+import com.aifred.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.aifred.service.MemberService;
+
 import java.util.List;
 
 @Slf4j
@@ -22,7 +22,7 @@ public class MemberController {
 
     /**
      *
-     * @param requestBody
+     * @param memberDto
      * @return
      */
     @PostMapping("/login")

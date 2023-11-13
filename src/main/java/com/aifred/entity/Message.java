@@ -21,7 +21,7 @@ public class Message extends BaseEntity{
     @Column(nullable = false)
     private String text;
 
-    //1==질문, 2==답변
+    // 메세지 구분 (1: 사용자의 질문, 2: 시스템의 답변, 3: 시스템의 질문, 4: 사용자의 답변)
     @Column(nullable = false, length = 1)
     private String type;
 

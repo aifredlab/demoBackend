@@ -1,6 +1,9 @@
 package com.aifred.service;
 
-import com.aifred.dto.*;
+import com.aifred.dto.ChatHistoryDto;
+import com.aifred.dto.ConversationDto;
+import com.aifred.dto.MessageDto;
+import com.aifred.dto.QuestionRequestDto;
 import com.aifred.entity.Content;
 import com.aifred.entity.Conversation;
 import com.aifred.entity.Message;
@@ -56,13 +59,15 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
         List<MessageDto> messageDtoList = new ArrayList<MessageDto>();
 
         //TODO:추후 querydsl로 join으로
-        List<Message> messageList = messageRepository.findByConversationId(conversationId);
+        List<Message> messageList = messageRepository.findByConversationIdOrderById(conversationId);
         for (Message message: messageList) {
             MessageDto messageDto = new MessageDto();
             messageDto.setType(message.getType());
             messageDto.setId(message.getId());
             messageDto.setText(message.getText());
+            messageDto.setCreatedAt(message.getCreatedAt());
 
+            //컨텐트 조회
             if (message.getContentId() != null) {
                 Optional<Content> content = contentRepository.findById(message.getContentId());
                 if (content.isPresent()) {
@@ -118,7 +123,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
 
     @Override
     public void removeChatHistory(Long conversationId) {
-        List<Message> messageList = messageRepository.findByConversationId(conversationId);
+        List<Message> messageList = messageRepository.findByConversationIdOrderById(conversationId);
         for (Message message: messageList) {
             contentRepository.deleteById(message.getContentId());
             messageRepository.deleteById(message.getId());
@@ -165,7 +170,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
         Message questionMessage = new Message();
         questionMessage.setText(questionRequestDto.getQuestion());
         questionMessage.setCreatedBy(memberId);
-        questionMessage.setType("1"); //type==질문
+        questionMessage.setType("1"); //type==사용자의 질문
         questionMessage.setConversationId(questionRequestDto.getConversationId());
         questionMessage.setContentId(questionRequestDto.getContentId());
         questionMessage.setText(questionRequestDto.getQuestion());

@@ -4,6 +4,7 @@ import com.aifred.dto.MessageDto;
 import com.aifred.dto.QuestionRequestDto;
 import com.aifred.service.ChatHistoryService;
 import com.aifred.service.LlmService;
+import com.aifred.util.DateTimeUtil;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.demo.ask.CommunicatorGrpc;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,7 +45,7 @@ public class LlmController {
 
 		Message.Builder messageBuilder = Message.newBuilder();
 		messageBuilder.setText(questionRequestDto.getQuestion());
-		messageBuilder.setType("1");
+		messageBuilder.setType("1"); //1: 사용자의 질문
 		Message message = messageBuilder.build();
 
 		//TODO:포트정보 프로퍼티에
@@ -58,14 +60,14 @@ public class LlmController {
 		questionRequestDto.setContent(contentText);
 
 		//======================================================
-		// DB에 데이터 생성
+		// DB에 사용자 질문의 대한 대화이력 저장
 		//======================================================
 		// Conversation 생성
 		QuestionRequestDto returnQuestionRequestDto = chatHistoryService.createConversation(questionRequestDto);
 		// Content 생성
 		Long contentId = chatHistoryService.createContent(contentText);
 		returnQuestionRequestDto.setContentId(contentId);
-		// 사용자 질문의 대한 Message 생성
+		//  Message 생성
 		chatHistoryService.createRequestMessage(returnQuestionRequestDto);
 
 		return new ResponseEntity<QuestionRequestDto>(returnQuestionRequestDto, HttpStatus.OK);
@@ -73,37 +75,59 @@ public class LlmController {
 
 	@PostMapping(value = "/ask", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Flux<String> streamDataPush(@RequestBody QuestionRequestDto questionRequestDto) {
+		//======================================================
+		// Message 생성
+		//======================================================
 		Message.Builder messageBuilder = Message.newBuilder();
 		messageBuilder.setText(questionRequestDto.getQuestion());
 		messageBuilder.setType("3");
 		Message message = messageBuilder.build();
 
+		//======================================================
+		// Content 생성
+		//======================================================
 		Content content = Content.newBuilder().setContent(questionRequestDto.getContent()).build();
 
+		//======================================================
+		// Message History 생성
+		//======================================================
 		Long memberId = 1000000000L; //TODO:하드코딩 수정
-		List<MessageDto> messageDtoList = chatHistoryService.getChatHistoryDetail(questionRequestDto.getConversationId());
-		for (MessageDto messageDto :messageDtoList) {
-			Message.Builder messageHistoryBuilder = Message.newBuilder();
-			messageBuilder.setText(questionRequestDto.getQuestion());
-			messageBuilder.setType("3");
-			Message messageHistory = messageBuilder.build();
-
-
+		//대화 이력조회
+		List<Message> messageHistoryList = new ArrayList<Message>();
+		if (questionRequestDto.getConversationId() != null) {
+			List<MessageDto> messageDtoList = chatHistoryService.getChatHistoryDetail(questionRequestDto.getConversationId());
+			for (MessageDto messageDto :messageDtoList) {
+				Message.Builder messageHistoryBuilder = Message.newBuilder();
+				messageBuilder.setText(questionRequestDto.getQuestion());
+				messageBuilder.setType(messageDto.getType());
+				messageBuilder.setTime(DateTimeUtil.getDateString(messageDto.getCreatedAt(), "yyyyMMddHHmmss"));
+				Message messageHistory = messageBuilder.build();
+				messageHistoryList.add(messageHistory);
+			}
 		}
 
 
+		//======================================================
+		// Conversation 생성
+		//======================================================
 		Conversation conversation = Conversation
 				.newBuilder()
 				.addContent(content)
 				.setMessage(message)
+				.addAllMessageHistory(messageHistoryList)
 				.build();
 
+		//======================================================
+		// democore 요청하기
+		//======================================================
 		//TODO:포트정보 프로퍼티에
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051).usePlaintext().build();
-
 		CommunicatorGrpc.CommunicatorStub stub = CommunicatorGrpc.newStub(channel);
 		CommunicatorGrpc.CommunicatorBlockingStub blockingStub = CommunicatorGrpc.newBlockingStub(channel);
 
+		//======================================================
+		// Stream으로 리턴
+		//======================================================
 		return Flux.create(sink -> {
 			Iterator<Message> messageIterator = blockingStub.askStreamReply(conversation);
 
@@ -119,7 +143,7 @@ public class LlmController {
 					}
 
 					//==================================
-					// 사용자 응답에 대한 Message 생성
+					// DB에 사용자 응답에 대한 Message 생성
 					//==================================
 					questionRequestDto.setResponse(text);
 					chatHistoryService.createResponseMessage(questionRequestDto);

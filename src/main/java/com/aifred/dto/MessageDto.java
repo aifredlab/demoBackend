@@ -3,6 +3,8 @@ package com.aifred.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class MessageDto {
@@ -18,6 +20,8 @@ public class MessageDto {
     private Long contentId;
 
     private String content;
+
+    private LocalDateTime createdAt;
 
 }
 
